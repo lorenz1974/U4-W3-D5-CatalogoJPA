@@ -283,18 +283,25 @@ public class Main {
                         _W("");
                         _R("-", 60);
 
-                        // resetta tutto il database
-                        JPAUtil.svuotaDatabase(em);
+                        _Wn("\nSei sicuro di voler rigenerare il database? (S/N): ");
+                        String conferma = ((String) _LI("string", scanner)).toLowerCase();
 
-                        GeneraCatalogo gc = new GeneraCatalogo();
-                        // Ricrea elementi randomici
-                        gc.CreaElementoCasuale("libro", 500);
-                        gc.CreaElementoCasuale("rivista", 500);
-                        gc.CreaUtenteCasuale(150);
-                        gc.CreaPrestitoCasuale(1000);
+                        if (conferma == "s") {
+                            // resetta tutto il database
+                            JPAUtil.svuotaDatabase(em);
+
+                            GeneraCatalogo gc = new GeneraCatalogo();
+                            // Ricrea elementi randomici
+                            gc.CreaElementoCasuale("libro", 500);
+                            gc.CreaElementoCasuale("rivista", 500);
+                            gc.CreaUtenteCasuale(150);
+                            gc.CreaPrestitoCasuale(1000);
+                            _W("\nDatabase rigenerato con successo.");
+                        } else {
+                            _W("\nOperazione annullata.");
+                        }
                         _W("");
                         _P();
-
                     }
 
                     // Opzione non valida
