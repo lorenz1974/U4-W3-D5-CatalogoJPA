@@ -2,7 +2,9 @@ package u4w3;
 
 import static u4w3.Utils.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
+
 import jakarta.persistence.EntityManager;
 import u4w3.dao.ElementoCatalogoDAO;
 import u4w3.dao.JPAUtil;
@@ -14,8 +16,6 @@ import u4w3.entities.Rivista;
 import u4w3.entities.Utente;
 import u4w3.exception.ElementoNonTrovatoException;
 import u4w3.exception.ErroreGenericoException;
-
-import static u4w3.Utils.*;
 
 public class Main {
 

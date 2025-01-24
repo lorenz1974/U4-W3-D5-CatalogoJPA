@@ -81,7 +81,7 @@ public class Prestito {
 
     @Override
     public String toString() {
-        String ritardo = dataRestituzionePrevista.isBefore(LocalDate.now()) ? "RITARDO" : "In tempo";
+        String ritardo = dataRestituzionePrevista.isBefore(LocalDate.now()) ? "RITARDO" : "OK";
         int giorniResidui = LocalDate.now().until(dataRestituzionePrevista).getDays();
         return String.format(" %-8s | %-15s | %-15s | %-30s | %-9s | %-9s | %-7s | %-2s |",
                 id,

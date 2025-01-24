@@ -75,14 +75,18 @@ public class ElementoCatalogoDAO {
 
     public List<ElementoCatalogo> findByAnno(int anno) throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
-            return em
+            List<ElementoCatalogo> risultati = em
                     .createQuery(
                             "SELECT e FROM ElementoCatalogo e WHERE e.annoPubblicazione = :anno ORDER BY e.annoPubblicazione",
                             ElementoCatalogo.class)
                     .setParameter("anno", anno)
                     .getResultList();
-        } catch (NoResultException e) {
-            throw new ElementoNonTrovatoException("Nessun elemento trovato per l'anno: " + anno);
+            if (risultati.isEmpty()) {
+                throw new ElementoNonTrovatoException("Nessun elemento trovato per l'anno: " + anno);
+            }
+            return risultati;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException(
                     "Errore durante la ricerca dell'elemento per l'anno: " + e.getMessage());
@@ -92,14 +96,18 @@ public class ElementoCatalogoDAO {
     public List<ElementoCatalogo> findByAutore(String autore)
             throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
-            return em
+            List<ElementoCatalogo> risultati = em
                     .createQuery(
                             "SELECT e FROM ElementoCatalogo e WHERE LOWER(e.autore) LIKE :autore ORDER BY e.autore",
                             ElementoCatalogo.class)
                     .setParameter("autore", "%" + autore.toLowerCase() + "%")
                     .getResultList();
-        } catch (NoResultException e) {
-            throw new ElementoNonTrovatoException("Nessun elemento trovato con autore: " + autore);
+            if (risultati.isEmpty()) {
+                throw new ElementoNonTrovatoException("Nessun elemento trovato con autore: " + autore);
+            }
+            return risultati;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException(
                     "Errore durante la ricerca dell'elemento per autore: " + e.getMessage());
@@ -109,14 +117,18 @@ public class ElementoCatalogoDAO {
     public List<ElementoCatalogo> findByTitolo(String titolo)
             throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
-            return em
+            List<ElementoCatalogo> risultati = em
                     .createQuery(
                             "SELECT e FROM ElementoCatalogo e WHERE LOWER(e.titolo) LIKE :titolo ORDER BY e.titolo",
                             ElementoCatalogo.class)
-                    .setParameter("titolo", "%" + titolo + "%")
+                    .setParameter("titolo", "%" + titolo.toLowerCase() + "%")
                     .getResultList();
-        } catch (NoResultException e) {
-            throw new ElementoNonTrovatoException("Nessun elemento trovato con titolo: " + titolo);
+            if (risultati.isEmpty()) {
+                throw new ElementoNonTrovatoException("Nessun elemento trovato con titolo: " + titolo);
+            }
+            return risultati;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException(
                     "Errore durante la ricerca dell'elemento per titolo: " + e.getMessage());
@@ -135,6 +147,8 @@ public class ElementoCatalogoDAO {
             }
             em.remove(elemento);
             transaction.commit();
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
@@ -143,12 +157,19 @@ public class ElementoCatalogoDAO {
         }
     }
 
-    public List<ElementoCatalogo> findAll() throws ErroreGenericoException {
+    public List<ElementoCatalogo> findAll() throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
-            return em.createQuery("SELECT e FROM ElementoCatalogo e", ElementoCatalogo.class).getResultList();
+            List<ElementoCatalogo> risultati = em
+                    .createQuery("SELECT e FROM ElementoCatalogo e", ElementoCatalogo.class).getResultList();
+            if (risultati.isEmpty()) {
+                throw new ElementoNonTrovatoException("Nessun elemento trovato.");
+            }
+            return risultati;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante il recupero di tutti gli elementi: : " + e.getMessage());
+                    "Errore durante il recupero di tutti gli elementi: " + e.getMessage());
         }
     }
 
@@ -158,13 +179,17 @@ public class ElementoCatalogoDAO {
             // Converto il tipo in minuscolo per evitare problemi di case sensitivity
             tipo = tipo.toLowerCase();
 
-            return em
+            List<ElementoCatalogo> risultati = em
                     .createQuery("SELECT e FROM ElementoCatalogo e WHERE LOWER(e.tipo) = :tipo ORDER BY e.titolo",
                             ElementoCatalogo.class)
                     .setParameter("tipo", tipo)
                     .getResultList();
-        } catch (NoResultException e) {
-            throw new ElementoNonTrovatoException("Nessun elemento trovato per il tipo:: " + tipo);
+            if (risultati.isEmpty()) {
+                throw new ElementoNonTrovatoException("Nessun elemento trovato per il tipo: " + tipo);
+            }
+            return risultati;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException(
                     "Errore durante la ricerca dell'elemento per tipo: " + e.getMessage());

@@ -38,6 +38,8 @@ public class UtenteDAO {
                 throw new ElementoNonTrovatoException("Nessun utente trovato con ID: " + id);
             }
             return utente;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException("Errore durante la ricerca dell'utente per ID: " + e.getMessage());
         }
@@ -72,6 +74,8 @@ public class UtenteDAO {
             }
             em.remove(utente);
             transaction.commit();
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
@@ -82,10 +86,14 @@ public class UtenteDAO {
 
     public List<Utente> findAll() throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
-            return em.createQuery("SELECT u FROM Utente u ORDER BY u.cognome, u.nome ASC", Utente.class)
+            List<Utente> utenti = em.createQuery("SELECT u FROM Utente u ORDER BY u.cognome, u.nome ASC", Utente.class)
                     .getResultList();
-        } catch (NoResultException e) {
-            throw new ElementoNonTrovatoException("Nessun utente trovato");
+            if (utenti.isEmpty()) {
+                throw new ElementoNonTrovatoException("Nessun utente trovato");
+            }
+            return utenti;
+        } catch (ElementoNonTrovatoException e) {
+            throw e;
         } catch (Exception e) {
             throw new ErroreGenericoException(
                     "Errore durante la ricerca degli utenti: " + e.getMessage());
