@@ -34,7 +34,7 @@ public class Libro extends ElementoCatalogo {
 
     @Override
     public String toString() {
-        return super.toString() + String.format(" %-20s | %-10s | %-11s |", _T(autore, 20), _T(genere, 11), "") + "\n"
+        return super.toString() + String.format(" %-20s | %-10s | %-11s |", _T(autore, 20), _T(genere, 10), "") + "\n"
                 + "-".repeat(132);
     }
 }
