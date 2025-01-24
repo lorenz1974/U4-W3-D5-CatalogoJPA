@@ -1,7 +1,7 @@
 package u4w3;
 
 import static u4w3.Utils.*;
-import u4w3.GeneraCatalogo;
+
 import java.util.*;
 import jakarta.persistence.EntityManager;
 import u4w3.dao.ElementoCatalogoDAO;
@@ -10,7 +10,6 @@ import u4w3.dao.PrestitoDAO;
 import u4w3.dao.UtenteDAO;
 import u4w3.entities.Libro;
 import u4w3.entities.Rivista;
-import u4w3.entities.Utente;
 import u4w3.exception.ElementoNonTrovatoException;
 import u4w3.exception.ErroreGenericoException;
 

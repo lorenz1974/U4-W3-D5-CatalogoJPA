@@ -93,7 +93,8 @@ public class ElementoCatalogoDAO {
             throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
             return em
-                    .createQuery("SELECT e FROM ElementoCatalogo e WHERE LOWER(e.autore) LIKE autore ORDER BY e.autore",
+                    .createQuery(
+                            "SELECT e FROM ElementoCatalogo e WHERE LOWER(e.autore) LIKE :autore ORDER BY e.autore",
                             ElementoCatalogo.class)
                     .setParameter("autore", "%" + autore.toLowerCase() + "%")
                     .getResultList();
