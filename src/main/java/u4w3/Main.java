@@ -375,6 +375,7 @@ public class Main {
                     // Opzione non valida
                     default -> {
                         _W("\nOpzione non valida.");
+                        _W("");
                     }
 
                 }
