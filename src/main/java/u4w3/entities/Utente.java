@@ -65,4 +65,11 @@ public class Utente {
     public void setNumeroTessera(String numeroTessera) {
         this.numeroTessera = numeroTessera;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%-5s | %-30s | %-30s | %-10s | %-10s |", id, nome, cognome, dataNascita, numeroTessera)
+                + "\n"
+                + "-".repeat(100);
+    }
 }

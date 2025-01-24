@@ -22,11 +22,11 @@ public class ElementoCatalogoDAO {
             transaction.begin();
             em.persist(elemento);
             transaction.commit();
-        } catch (Exception exception) {
+        } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new ErroreGenericoException("Errore durante il salvataggio dell'elemento: " + exception.getMessage());
+            throw new ErroreGenericoException("Errore durante il salvataggio dell'elemento: " + e.getMessage());
         }
     }
 
@@ -37,9 +37,9 @@ public class ElementoCatalogoDAO {
                 throw new ElementoNonTrovatoException("Nessun elemento trovato con ID: " + id);
             }
             return elemento;
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante la ricerca dell'elemento per ID: " + exception.getMessage());
+                    "Errore durante la ricerca dell'elemento per ID: " + e.getMessage());
         }
     }
 
@@ -51,12 +51,12 @@ public class ElementoCatalogoDAO {
                     .getSingleResult();
             // Se trova qualcosa, ritorna true
             return true;
-        } catch (NoResultException exception) {
+        } catch (NoResultException e) {
             // Se non trova nulla, ritorna false
             return false;
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante la ricerca dell'elemento per ISBN: " + exception.getMessage());
+                    "Errore durante la ricerca dell'elemento per ISBN: " + e.getMessage());
         }
     }
 
@@ -65,11 +65,11 @@ public class ElementoCatalogoDAO {
             return em.createQuery("SELECT e FROM ElementoCatalogo e WHERE e.codiceISBN = :isbn", ElementoCatalogo.class)
                     .setParameter("isbn", isbn)
                     .getSingleResult();
-        } catch (NoResultException exception) {
+        } catch (NoResultException e) {
             throw new ElementoNonTrovatoException("Nessun elemento trovato con ISBN: " + isbn);
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante la ricerca dell'elemento per ISBN: " + exception.getMessage());
+                    "Errore durante la ricerca dell'elemento per ISBN: " + e.getMessage());
         }
     }
 
@@ -81,11 +81,11 @@ public class ElementoCatalogoDAO {
                             ElementoCatalogo.class)
                     .setParameter("anno", anno)
                     .getResultList();
-        } catch (NoResultException exception) {
+        } catch (NoResultException e) {
             throw new ElementoNonTrovatoException("Nessun elemento trovato per l'anno: " + anno);
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante la ricerca dell'elemento per l'anno: " + exception.getMessage());
+                    "Errore durante la ricerca dell'elemento per l'anno: " + e.getMessage());
         }
     }
 
@@ -98,11 +98,11 @@ public class ElementoCatalogoDAO {
                             ElementoCatalogo.class)
                     .setParameter("autore", "%" + autore.toLowerCase() + "%")
                     .getResultList();
-        } catch (NoResultException exception) {
+        } catch (NoResultException e) {
             throw new ElementoNonTrovatoException("Nessun elemento trovato con autore: " + autore);
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante la ricerca dell'elemento per autore: " + exception.getMessage());
+                    "Errore durante la ricerca dell'elemento per autore: " + e.getMessage());
         }
     }
 
@@ -115,11 +115,11 @@ public class ElementoCatalogoDAO {
                             ElementoCatalogo.class)
                     .setParameter("titolo", "%" + titolo + "%")
                     .getResultList();
-        } catch (NoResultException exception) {
+        } catch (NoResultException e) {
             throw new ElementoNonTrovatoException("Nessun elemento trovato con titolo: " + titolo);
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante la ricerca dell'elemento per titolo: " + exception.getMessage());
+                    "Errore durante la ricerca dell'elemento per titolo: " + e.getMessage());
         }
     }
 
@@ -135,20 +135,39 @@ public class ElementoCatalogoDAO {
             }
             em.remove(elemento);
             transaction.commit();
-        } catch (Exception exception) {
+        } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new ErroreGenericoException("Errore durante l'eliminazione dell'elemento: " + exception.getMessage());
+            throw new ErroreGenericoException("Errore durante l'eliminazione dell'elemento: " + e.getMessage());
         }
     }
 
     public List<ElementoCatalogo> findAll() throws ErroreGenericoException {
         try {
             return em.createQuery("SELECT e FROM ElementoCatalogo e", ElementoCatalogo.class).getResultList();
-        } catch (Exception exception) {
+        } catch (Exception e) {
             throw new ErroreGenericoException(
-                    "Errore durante il recupero di tutti gli elementi: : " + exception.getMessage());
+                    "Errore durante il recupero di tutti gli elementi: : " + e.getMessage());
+        }
+    }
+
+    public List<ElementoCatalogo> findAllByTipo(String tipo)
+            throws ErroreGenericoException, ElementoNonTrovatoException {
+        try {
+            // Converto il tipo in minuscolo per evitare problemi di case sensitivity
+            tipo = tipo.toLowerCase();
+
+            return em
+                    .createQuery("SELECT e FROM ElementoCatalogo e WHERE LOWER(e.tipo) = :tipo ORDER BY e.titolo",
+                            ElementoCatalogo.class)
+                    .setParameter("tipo", tipo)
+                    .getResultList();
+        } catch (NoResultException e) {
+            throw new ElementoNonTrovatoException("Nessun elemento trovato per il tipo:: " + tipo);
+        } catch (Exception e) {
+            throw new ErroreGenericoException(
+                    "Errore durante la ricerca dell'elemento per tipo: " + e.getMessage());
         }
     }
 }

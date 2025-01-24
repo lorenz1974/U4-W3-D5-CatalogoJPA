@@ -78,11 +78,9 @@ public class Utils {
         _W("E. Ricerca per titolo");
         _W("F. Ricerca titoli in prestito per utente");
         _W("G. Ricerca prestiti scaduti e non restituiti");
-        // _W("H. Stampa statistiche");
-        // _R("-", 15);
-        // _W("K. AnySearch!");
-        // _W("B. Setta formato tabella" + (Catalogo.getFormatoTabella() ? " ON" : "
-        // OFF"));
+        _R("-", 15);
+        _W("1. Mostra tutto il catalogo");
+        _W("2. Mostra tutti gli utenti");
         _R("-", 15);
         _W("Z. Esci");
         _R("-", 15);

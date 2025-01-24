@@ -80,11 +80,15 @@ public class UtenteDAO {
         }
     }
 
-    public List<Utente> findAll() throws ErroreGenericoException {
+    public List<Utente> findAll() throws ErroreGenericoException, ElementoNonTrovatoException {
         try {
-            return em.createQuery("SELECT u FROM Utente u", Utente.class).getResultList();
+            return em.createQuery("SELECT u FROM Utente u ORDER BY u.cognome, u.nome ASC", Utente.class)
+                    .getResultList();
+        } catch (NoResultException e) {
+            throw new ElementoNonTrovatoException("Nessun utente trovato");
         } catch (Exception e) {
-            throw new ErroreGenericoException("Errore durante il recupero di tutti gli utenti: " + e.getMessage());
+            throw new ErroreGenericoException(
+                    "Errore durante la ricerca degli utenti: " + e.getMessage());
         }
     }
 }

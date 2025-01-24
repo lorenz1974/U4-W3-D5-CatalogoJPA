@@ -8,8 +8,10 @@ import u4w3.dao.ElementoCatalogoDAO;
 import u4w3.dao.JPAUtil;
 import u4w3.dao.PrestitoDAO;
 import u4w3.dao.UtenteDAO;
+import u4w3.entities.ElementoCatalogo;
 import u4w3.entities.Libro;
 import u4w3.entities.Rivista;
+import u4w3.entities.Utente;
 import u4w3.exception.ElementoNonTrovatoException;
 import u4w3.exception.ErroreGenericoException;
 
@@ -270,6 +272,73 @@ public class Main {
                         _P();
                     }
 
+                    // Visualizza tutti gli elementi del catalogo usando la paginazione
+                    // https://www.geeksforgeeks.org/servlet-pagination-with-example/
+
+                    case "1" -> {
+                        _W("");
+                        _R("-", 60);
+
+                        // Libri o riviste (tutto diventa una cosa senza senso!)
+                        String tipo = "";
+                        while (!"L".equals(tipo) && !"R".equals(tipo)) {
+                            _Wn("\nVuoi aggiungere un libro o una rivista? (L/R) : ");
+                            tipo = ((String) _LI("string", scanner)).toUpperCase();
+
+                            if (!"L".equals(tipo) && !"R".equals(tipo)) {
+                                _W("\nTipo non valido.");
+                            }
+                        }
+
+                        // Converte in tipo presente nel DB
+                        tipo = "L".equalsIgnoreCase(tipo) ? "libro" : "rivista";
+
+                        ElementoCatalogoDAO elementoCatalogoDAO = new ElementoCatalogoDAO(em);
+                        List<ElementoCatalogo> elementi = elementoCatalogoDAO.findAllByTipo(tipo);
+                        int pageSize = 50;
+                        int totalPages = (int) Math.ceil((double) elementi.size() / pageSize);
+
+                        // Usa un for per la paginazione
+                        for (int page = 0; page < totalPages; page++) {
+                            _W("");
+                            _R("-", 132);
+                            elementi.stream()
+                                    .skip(page * pageSize)
+                                    .limit(pageSize)
+                                    .forEach(System.out::println);
+                            _W("");
+                            _W("Pagina " + (page + 1) + " di " + totalPages);
+                            if (page < totalPages - 1) {
+                                _P();
+                            }
+                        }
+                    }
+
+                    case "2" -> {
+                        _W("");
+                        _R("-", 60);
+
+                        UtenteDAO utenteDAO = new UtenteDAO(em);
+                        List<Utente> utenti = utenteDAO.findAll();
+                        int pageSize = 50;
+                        int totalPages = (int) Math.ceil((double) utenti.size() / pageSize);
+
+                        // Usa un for per la paginazione
+                        for (int page = 0; page < totalPages; page++) {
+                            _W("");
+                            _R("-", 132);
+                            utenti.stream()
+                                    .skip(page * pageSize)
+                                    .limit(pageSize)
+                                    .forEach(System.out::println);
+                            _W("");
+                            _W("Pagina " + (page + 1) + " di " + totalPages);
+                            if (page < totalPages - 1) {
+                                _P();
+                            }
+                        }
+                    }
+
                     // Esci
                     case "z" -> {
                         _W("");
@@ -283,9 +352,9 @@ public class Main {
                         _R("-", 60);
 
                         _Wn("\nSei sicuro di voler rigenerare il database? (S/N): ");
-                        String conferma = ((String) _LI("string", scanner)).toLowerCase();
+                        String conferma = (String) _LI("string", scanner);
 
-                        if (conferma == "s") {
+                        if ("s".equalsIgnoreCase(conferma)) {
                             // resetta tutto il database
                             JPAUtil.svuotaDatabase(em);
 
